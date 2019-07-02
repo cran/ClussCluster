@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Ge Jiang, Chuanqi Wang" />
+
+<meta name="date" content="2019-07-02" />
+
+<title>ClussCluster</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">ClussCluster</h1>
+<h4 class="author">Ge Jiang, Chuanqi Wang</h4>
+<h4 class="date">2019-07-02</h4>
+
+
+
+<p>The ClussCluster package implements the sparse clustering algorithm described in “Simultaneous detection of cell types and type-specific signature genes in single-cell transcriptome data”. This algorithm performs clustering, detects distinct cell types, and identifies signature genes which are markers of these cell types. This vignette will guide you through the steps necessary to apply the algorithm to your data. A real scRNA-seq data set will be used as an illustration.</p>
+<p>The main functions of this ClussCluster package include:</p>
+<ol style="list-style-type: decimal">
+<li>Preprocessing single-cell RNA-seq data to facilitate analysis;</li>
+<li>Detecting distinct cell types among the cells;</li>
+<li>Identifying signature genes of each cell type that are uniquely expressed in the associated cell type;</li>
+<li>Visualizing the expression patterns of selected genes using heatmap.</li>
+</ol>
+<div id="load-the-package" class="section level2">
+<h2>1. Load the package</h2>
+<p>First, we need to install and load the ClussCluster package. For each of the following sections in this vignette, we assume this step has been carried out.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co">#install.packages(&#39;ClussCluster&#39;)</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(ClussCluster)</a></code></pre></div>
+</div>
+<div id="example-data-set" class="section level2">
+<h2>2. Example Data set</h2>
+<p>For this vignette we will use the scRNA-seq data created by Hou et.al (2016). This data set is also used in the paper. It contains normalized and log-transformed gene expression, log(FPKM+1), measurements for 33 cells and 27,033 genes. 25 single cancer cells are derived from a human hepatocellular carcinoma (HCC) tissue and the other 8 are single human hepatoblastoma-derived (HepG2) cells. Therefore, the 33 cells belong to three populations: HCC-sub I, HCC-sub II, and HepG2. Since those cells were derived from different tissues and have different biological functions, the subset of genes that separate HCC cells from HepG2 cells are unlikely to be the same as those that separate the two HCC subpopulations. We are going to apply the ClussCluster algorithm and identify the three subpopulations and their signature genes, respectively.</p>
+<p>Since the Hou data set is large, the viewed result is using a truncated data of Hou, called “Hou_sim”, which has only 100 genes.We first view the top of the data set to ensure it is in the correct format. Here the genes are rows and the columns are cells as desired.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">data</span>(Hou_sim)</a>
+<a class="sourceLine" id="cb2-2" title="2">hou.dat &lt;-<span class="st"> </span>Hou_sim<span class="op">$</span>x</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="kw">dim</span>(hou.dat)</a></code></pre></div>
+<pre><code>## [1] 100  33</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">hou.dat[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##          Ca_01_RNA Ca_02_RNA Ca_03_RNA Ca_04_RNA Ca_05_RNA
+## MIR6723  11.504714 11.565489 11.539363 11.805804 11.130832
+## FTL       8.777141  9.504263  9.014779  8.447843  8.352809
+## APOA2     9.576607  9.648479  9.472589  9.182871  9.688982
+## AMBP      9.235179  9.140271  9.189189  9.152703  8.974000
+## SERPINA1  8.558757  9.012121  8.978799  8.915654  8.684773
+## RBP4      8.850374  8.343378  8.438167  8.892830  9.276493
+## RPLP0     7.128400  7.213989  6.870081  6.612286  7.677984
+## EEF1A1    6.765042  7.263995  7.224965  7.238353  7.177950
+## UBB       7.578243  8.242412  7.852855  7.755377  7.460047
+## RPL7A     6.788272  7.157401  7.140334  6.760244  6.616789</code></pre>
+<p>Here Hou is a list containing many slots. The slot ‘x’ is the expression data set that is normalized and log-transformed but not centered. The slot ‘groups’ stores the names of the subpopulations and the slot ‘y’ stores the cluster labels of all cells. In practice, the labels are unlikely to be available and will be estimated by ClussCluster. In Section 5 of this vignette, the labels will be used as a reference to examine the clustering results of ClussCluster.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">Hou_sim<span class="op">$</span>groups</a></code></pre></div>
+<pre><code>## [1] &quot;HCC_subpop_1&quot; &quot;HCC_subpop_2&quot; &quot;HepG2&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">table</span>(Hou_sim<span class="op">$</span>y)</a></code></pre></div>
+<pre><code>## 
+##  1  2  3 
+## 18  7  8</code></pre>
+<p>The gene and cell names are also stored:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">Hou_sim<span class="op">$</span>gnames[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>]</a></code></pre></div>
+<pre><code>##  [1] &quot;MIR6723&quot;  &quot;FTL&quot;      &quot;APOA2&quot;    &quot;AMBP&quot;     &quot;SERPINA1&quot; &quot;RBP4&quot;     &quot;RPLP0&quot;   
+##  [8] &quot;EEF1A1&quot;   &quot;UBB&quot;      &quot;RPL7A&quot;</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">Hou_sim<span class="op">$</span>snames</a></code></pre></div>
+<pre><code>##  [1] &quot;Ca_01_RNA&quot;          &quot;Ca_02_RNA&quot;          &quot;Ca_03_RNA&quot;          &quot;Ca_04_RNA&quot;         
+##  [5] &quot;Ca_05_RNA&quot;          &quot;Ca_06_RNA&quot;          &quot;Ca_07_RNA&quot;          &quot;Ca_08_RNA&quot;         
+##  [9] &quot;Ca_09_RNA&quot;          &quot;Ca_10_RNA&quot;          &quot;Ca_11_RNA&quot;          &quot;Ca_12_RNA&quot;         
+## [13] &quot;Ca_13_RNA&quot;          &quot;Ca_14_RNA&quot;          &quot;Ca_15_RNA&quot;          &quot;Ca_16_RNA&quot;         
+## [17] &quot;Ca_17_RNA&quot;          &quot;Ca_18_RNA&quot;          &quot;Ca_19_RNA&quot;          &quot;Ca_20_RNA&quot;         
+## [21] &quot;Ca_21_RNA&quot;          &quot;Ca_22_RNA&quot;          &quot;Ca_23_RNA&quot;          &quot;Ca_24_RNA&quot;         
+## [25] &quot;Ca_25_RNA&quot;          &quot;scTrio_HepG2_1_RNA&quot; &quot;scTrio_HepG2_2_RNA&quot; &quot;scTrio_HepG2_3_RNA&quot;
+## [29] &quot;scTrio_HepG2_4_RNA&quot; &quot;scTrio_HepG2_5_RNA&quot; &quot;scTrio_HepG2_6_RNA&quot; &quot;scRNA-seq_HepG2_1&quot; 
+## [33] &quot;scRNA-seq_HepG2_2&quot;</code></pre>
+</div>
+<div id="pre-processing-the-data" class="section level2">
+<h2>3. Pre-processing the data</h2>
+<p>Before beginning an analysis using ClussCluster, you will need to carry out a few preprocessing steps. This includes <strong>normalization, log transformation, filtering of genes that are mostly zero, and getting the data into the format</strong> that is expected by the ClussCluster function.</p>
+<p>ClussCluster requires that data be normalized for sequencing depth prior to running ClussCluster. It is recommended that users make use of one of the many methods that exist for normalizing scRNA-Seq data. We also recommend that the data is log-transformed.</p>
+<p>With real data, it is advisable to filter the input gene set to remove genes that have an extremely high proportion of zeroes. That means, genes where only one or fewer cells have a nonzero measurement should be filtered out. Because of this, we do not recommend that the data be centered prior to the filtering. Besides zero counts, genes with very low expression mean and variance should also be filtered out. In this section, we demonstrate the utility of the filter_gene function, which can be helpful if working with the log-transformed and normalized expression data.</p>
+<p>Three thresholds can be varied:</p>
+<ol style="list-style-type: decimal">
+<li>n0prop: minimum proportion of zeroes. For example, n0prop=0.2 means that genes are filtered out if they are less than 20 percent zero;</li>
+<li>minmean: minimum mean of expression. For example, minmean=2 means that genes are filtered out if their mean expression is less than 2;</li>
+<li>minsd: minimum standard deviation of expression. For example, minsd=1.5 means that genes are filtered out if the standard deviation of expression is less than 1.5.</li>
+</ol>
+<p>First, load the Hou example data set:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw">data</span>(Hou_sim)</a>
+<a class="sourceLine" id="cb14-2" title="2">hou.dat &lt;-<span class="st"> </span>Hou_sim<span class="op">$</span>x</a></code></pre></div>
+<p>Now, apply the filter_gene function, use a threshold of 0.2 on the proportion of zeroes, 1.0 on the mean of expression, and 1.5 on the standard deviation of expression:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">run.ft &lt;-<span class="st"> </span><span class="kw">filter_gene</span>(hou.dat, <span class="dt">minmean=</span><span class="fl">1.0</span>, <span class="dt">n0prop=</span><span class="fl">0.2</span>, <span class="dt">minsd=</span><span class="fl">1.5</span>)</a></code></pre></div>
+<pre><code>## 100out of100genes have mean expression &gt;=1TRUE</code></pre>
+<pre><code>## 100out of100genes have proportion of non-zero expression &gt;=0.2TRUE</code></pre>
+<pre><code>## 16out of100genes have standard deviation of expression &gt;=1.5TRUE</code></pre>
+<pre><code>## Overall,16out of100genes are kept.TRUE</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">dat.ft &lt;-<span class="st"> </span>run.ft<span class="op">$</span>dat.ft</a>
+<a class="sourceLine" id="cb20-2" title="2"></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="kw">dim</span>(dat.ft)</a></code></pre></div>
+<pre><code>## [1] 16 33</code></pre>
+<p>As we can see, this combination of filters removes 94 genes and keeps 16 genes.</p>
+<p>Here run.ft is a list that contains several slots:</p>
+<ol style="list-style-type: decimal">
+<li>dfname: the original data set before filtering;</li>
+<li>dat.ft: the data set after filtering;</li>
+<li>index: the index of genes that are kept;</li>
+<li>minmean, n0prop, minsd: thresholds used in the filtering.</li>
+</ol>
+<p>Here we view the top of the filtered data:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">dat.ft[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+<pre><code>##          Ca_01_RNA Ca_02_RNA Ca_03_RNA Ca_04_RNA Ca_05_RNA
+## EEF1A1    6.765042  7.263995  7.224965  7.238353  7.177950
+## APOC3     8.379980  8.454183  8.533255  8.310009  8.674804
+## APOH      9.071375  8.342328  8.581050  7.980407  8.447236
+## TF        8.447174  8.373840  8.533098  8.066634  8.466870
+## APOA1     8.805525  7.824874  7.810661  8.435543  9.272113
+## AHSG      7.673000  7.182702  7.274632  6.065108  7.948187
+## GNB2L1    6.446358  6.422880  5.787146  5.851927  6.230214
+## VTN       8.596627  8.629278  8.694035  8.253116  8.293972
+## HP        7.748529  7.419285  7.682897  8.187730  7.335614
+## SERPINA3  6.797823  6.795819  6.663207  7.074701  6.143505</code></pre>
+<p>and check if the filtering was succesful by examing the zero proportion, mean, standard deviation of each gene:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="kw">summary</span>(<span class="kw">apply</span>(dat.ft<span class="op">!=</span><span class="dv">0</span>, <span class="dv">1</span>, mean))</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##  0.9394  0.9924  1.0000  0.9905  1.0000  1.0000</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="kw">summary</span>(<span class="kw">apply</span>(dat.ft, <span class="dv">1</span>, mean))</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   5.957   6.183   6.423   6.517   6.729   7.529</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw">summary</span>(<span class="kw">apply</span>(dat.ft, <span class="dv">1</span>, sd))</a></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   1.502   1.665   1.775   1.987   2.287   3.026</code></pre>
+</div>
+<div id="determine-the-tuning-parameter" class="section level2">
+<h2>4. Determine the tuning parameter</h2>
+<p>The tuning parameter s is pivotal to the algorithm’s performance and needs to be decided beforehand. It controls the level of sparsity of the marker genes for each cluster and the values in the resulting weight matrix. In the literature, a permutation approach that is closely related to the gap statistic is recommended.</p>
+<p>We demonstrate the utility of the ClussCluster_Gap function to generate permutation samples and calculate the gap statistic. A set of candidate tuning parameter needs to be supplied beforehand and the one that maximizes the gap statistic will be selected. See more details in the paper.</p>
+<p>To determine the value of s the following needs to be provided:</p>
+<ol style="list-style-type: decimal">
+<li>dat.ft: the expression data, regardless it is filtered or raw data set;</li>
+<li>nclust or centers: the number of clusters or the centers of clusters. For the Hou data there are three subpopulations present in the data set and we put nclust = 3;</li>
+<li>ws: a set of candidate tuning parameters. Here we choose the set of initial parameters to be 2.4, 3.1, and 3.8.</li>
+</ol>
+<p>The default number of permuation sample is B = 20. To save time in this example, we set B = 5. Now, apply the ClussCluster_Gap function on the filtered data set dat.ft:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1">run.gap &lt;-<span class="st"> </span><span class="kw">ClussCluster_Gap</span>(dat.ft, <span class="dt">B=</span><span class="dv">5</span>, <span class="dt">nclust =</span> <span class="dv">3</span>, <span class="dt">ws =</span> <span class="kw">c</span>(<span class="fl">2.4</span>, <span class="fl">3.1</span>, <span class="fl">3.8</span>))</a></code></pre></div>
+<pre><code>## s = 2.4</code></pre>
+<pre><code>## s = 3.1</code></pre>
+<pre><code>## s = 3.8</code></pre>
+<pre><code>## permutation sample 1</code></pre>
+<pre><code>## s = 2.4</code></pre>
+<pre><code>## s = 3.1</code></pre>
+<pre><code>## s = 3.8</code></pre>
+<pre><code>## permutation sample 2</code></pre>
+<pre><code>## s = 2.4</code></pre>
+<pre><code>## s = 3.1</code></pre>
+<pre><code>## s = 3.8</code></pre>
+<pre><code>## permutation sample 3</code></pre>
+<pre><code>## s = 2.4</code></pre>
+<pre><code>## s = 3.1</code></pre>
+<pre><code>## s = 3.8</code></pre>
+<pre><code>## permutation sample 4</code></pre>
+<pre><code>## s = 2.4</code></pre>
+<pre><code>## s = 3.1</code></pre>
+<pre><code>## s = 3.8</code></pre>
+<pre><code>## permutation sample 5</code></pre>
+<pre><code>## s = 2.4</code></pre>
+<pre><code>## s = 3.1</code></pre>
+<pre><code>## s = 3.8</code></pre>
+<p>We can view the results of the gap statistics by applying the print_ClussCluster_Gap function. The number of clusters, average number of genes with non-zero weights across the clusters, gap statistics and their standard deviations are listed:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" title="1"><span class="kw">print_ClussCluster_Gap</span>(run.gap)</a></code></pre></div>
+<pre><code>## Tuning parameter selection results for ClussCluster:
+##   Wbound # Clusters # Mean Non-Zero W&#39;s Gap Statistic Standard Deviation
+## 1    2.4          3               12.33        0.3679             0.0970
+## 2    3.1          3               15.33        0.3542             0.0446
+## 3    3.8          3               15.33        0.3581             0.0446
+## Tuning parameter that leads to largest Gap statistic:  2.4
+## Tuning parameter within one sd of the largest Gap statistic:  2.4</code></pre>
+<p>As the tuning parameter increases, the average number of signature genes and the value of the gap statistic tend to increase. The one that maximizes the gap statistic is. Alternatively, one can choose a tuning parameter to be the smallest value that is within one standard deviation of the maximal gap statistic. This results in fewer genes with positive weights. In practice, one may use this one-standard-deviation rule to select a smaller number of genes for more interpretable results.</p>
+<p>Once the tuning parameter has been decided, we can go ahead and run the ClussCluster algorithm. For this vignette, we will use the one selected by the one-sd rule:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" title="1">s &lt;-<span class="st"> </span>run.gap<span class="op">$</span>onesd.bestw</a>
+<a class="sourceLine" id="cb56-2" title="2">s</a></code></pre></div>
+<pre><code>## [1] 2.4</code></pre>
+</div>
+<div id="run-clusscluster" class="section level2">
+<h2>5. Run ClussCluster</h2>
+<p>The ClussCluster algorithm aims to detect different cell types and identify cell-type-specific signature genes in single-cell RNA sequencing data.</p>
+<p>First, we need to specify the parameter arguments that we’ll pass to the ClussCluster function. Similar to ClussCluster_Gap, we set the data set to be x = dat.ft, the number of clusters nclust = 3 (one can also set the centers of the clusters instead) and the tuning parameters ws = run.gap$onesd.bestw. See ?ClussCluster for how to specify other optional parameters.</p>
+<p>Note: The users can choose any tuning parameter other than run.gap$onesd.bestw. One can also provide multiple tuning parameters to ClussCluster function.</p>
+<p>If the users have run ClussCluster_Gap in the previous step, every candidate tuning parameter was already evaluated by ClussCluster function and the results are stored in run.gap$run. Therefore, if the tuning parameter to be used in this step is in the set of candidate tuning parameter, say ws = 3.8, one can either run the ClussCluster function or directly extract the results from the ClussCluster_Gap object:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1">i&lt;-<span class="st"> </span><span class="kw">match</span>(run.gap<span class="op">$</span>onesd.bestw, <span class="kw">c</span>(<span class="fl">2.4</span>, <span class="fl">3.1</span>, <span class="fl">3.8</span>))</a>
+<a class="sourceLine" id="cb58-2" title="2">run.cc &lt;-<span class="st"> </span>run.gap<span class="op">$</span>run[[i]]</a>
+<a class="sourceLine" id="cb58-3" title="3">run.cc &lt;-<span class="st"> </span><span class="kw">ClussCluster</span>(dat.ft, <span class="dt">nclust =</span> <span class="dv">3</span>, <span class="dt">ws =</span> run.gap<span class="op">$</span>onesd.bestw)</a></code></pre></div>
+<p>The two sets of commands will produce the same results.</p>
+<div id="viewing-clustering-results" class="section level3">
+<h3>Viewing Clustering Results</h3>
+<p>Here we first check the accuracy of the clustering results by examining the confusion matrix of the estimated cluster labels in run.cc and the true labels in Hou$y:</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1">theta &lt;-<span class="st"> </span>run.cc<span class="op">$</span>theta</a>
+<a class="sourceLine" id="cb59-2" title="2"><span class="kw">table</span>(Hou_sim<span class="op">$</span>y, theta)</a></code></pre></div>
+<pre><code>##    theta
+##      1  2  3
+##   1  0  0 18
+##   2  7  0  0
+##   3  0  7  1</code></pre>
+<p>Here we see that almost all 33 cells were clustered to the correct cell subpopulation with the HCC_subpop_1 cells making up cluster 1, the HCC_subpop_2 cells making up cluster 2 and the HepG2 cells making up cluster 3.</p>
+<p>Note that the labels can change arbitrarily with different seeds in the clustering process, it is crucial that the users find the one-to-one correspondence between the cluster labels and the cell types.</p>
+<p>We have found in simulation studies that the accuracy of the clustering is closely related to the accuracy of the selected signature genes in the next step. For example, if half of the cells in cluster 1 are HCC_subpop_1 cells but the other half are not, then the signature genes of cluster 1 should not be identified as marker genes of HCC_subpop_1.</p>
+</div>
+<div id="cell-type-specific-signature-genes" class="section level3">
+<h3>Cell-type-specific signature genes</h3>
+<p>We first apply the print_ClussCluster function to the ClussCluster object to print the number of signature genes for each cluster:</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="kw">print_ClussCluster</span>(run.cc)</a></code></pre></div>
+<pre><code>## Tuning parameter is:  2.4
+## Number of signature genes of each cluster:  14 12 11
+## Clustering:  3 3 3 3 3 1 3 3 3 3 3 3 1 3 1 3 3 3 3 1 1 1 3 3 1 2 3 2 2 2 2 2 2
+## Value of objective function:  945.4568</code></pre>
+<p>The importance of each gene to each cluster is stored in the weight matrix. The matrix is of dimension p x K, where p is the number of genes and K is the number of clusters. The first column of the weight matrix contains the importance of all genes to HCC_subpop_1 cells, the second column to the HCC_subpop_2 cells, and the third column to the HepG2 cells. The unimportant genes are assigned zero weights whereas important genes are given positive weights.</p>
+<p>Here we view the top of the weight matrix:</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1">wt.mat &lt;-<span class="st"> </span>run.cc<span class="op">$</span>w</a>
+<a class="sourceLine" id="cb63-2" title="2"><span class="kw">head</span>(wt.mat, <span class="dv">10</span>)</a></code></pre></div>
+<pre><code>##             [,1]       [,2]       [,3]
+##  [1,] 0.06952553 0.08100039 0.00000000
+##  [2,] 0.05851836 0.25708289 0.17314387
+##  [3,] 0.12997910 0.00000000 0.09069054
+##  [4,] 0.14490477 0.00000000 0.05212584
+##  [5,] 0.85715295 0.19538397 0.65797477
+##  [6,] 0.32643314 0.13778463 0.16979373
+##  [7,] 0.01924033 0.10334980 0.00000000
+##  [8,] 0.12588686 0.29869048 0.31495780
+##  [9,] 0.07957272 0.81501781 0.37367290
+## [10,] 0.16872714 0.00000000 0.06070300</code></pre>
+<p>To extract the index and the names of the signature genes for each cluster we can run:</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1">sig_index &lt;-<span class="st"> </span><span class="kw">apply</span>(wt.mat, <span class="dv">2</span>, <span class="cf">function</span>(w) <span class="kw">which</span>(w<span class="op">!=</span><span class="dv">0</span>))</a>
+<a class="sourceLine" id="cb65-2" title="2">sig_names &lt;-<span class="st"> </span><span class="kw">apply</span>(wt.mat, <span class="dv">2</span>, <span class="cf">function</span>(w) <span class="kw">rownames</span>(dat.ft)[<span class="kw">which</span>(w<span class="op">!=</span><span class="dv">0</span>)])</a>
+<a class="sourceLine" id="cb65-3" title="3">sig_names</a></code></pre></div>
+<pre><code>## [[1]]
+##  [1] &quot;EEF1A1&quot;   &quot;APOC3&quot;    &quot;APOH&quot;     &quot;TF&quot;       &quot;APOA1&quot;    &quot;AHSG&quot;     &quot;GNB2L1&quot;  
+##  [8] &quot;VTN&quot;      &quot;HP&quot;       &quot;SERPINA3&quot; &quot;RPL4&quot;     &quot;SERPINC1&quot; &quot;RPSA&quot;     &quot;CYB5A&quot;   
+## 
+## [[2]]
+##  [1] &quot;EEF1A1&quot;   &quot;APOC3&quot;    &quot;APOA1&quot;    &quot;AHSG&quot;     &quot;GNB2L1&quot;   &quot;VTN&quot;      &quot;HP&quot;      
+##  [8] &quot;RPL7&quot;     &quot;RPL4&quot;     &quot;SERPINC1&quot; &quot;RPL5&quot;     &quot;RPSA&quot;    
+## 
+## [[3]]
+##  [1] &quot;APOC3&quot;    &quot;APOH&quot;     &quot;TF&quot;       &quot;APOA1&quot;    &quot;AHSG&quot;     &quot;VTN&quot;      &quot;HP&quot;      
+##  [8] &quot;SERPINA3&quot; &quot;RPL7&quot;     &quot;SERPINC1&quot; &quot;CYB5A&quot;</code></pre>
+<p>The top 5 signature genes for each cluster can be identified as:</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1">top_<span class="dv">5</span>_genes &lt;-<span class="st"> </span><span class="kw">apply</span>(wt.mat, <span class="dv">2</span>, <span class="cf">function</span>(w) <span class="kw">rownames</span>(dat.ft)[<span class="kw">order</span>(w, <span class="dt">decreasing =</span> T)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]])</a>
+<a class="sourceLine" id="cb67-2" title="2">top_<span class="dv">5</span>_genes</a></code></pre></div>
+<pre><code>##      [,1]       [,2]       [,3]      
+## [1,] &quot;APOA1&quot;    &quot;HP&quot;       &quot;APOA1&quot;   
+## [2,] &quot;AHSG&quot;     &quot;SERPINC1&quot; &quot;SERPINC1&quot;
+## [3,] &quot;SERPINC1&quot; &quot;VTN&quot;      &quot;HP&quot;      
+## [4,] &quot;SERPINA3&quot; &quot;APOC3&quot;    &quot;VTN&quot;     
+## [5,] &quot;TF&quot;       &quot;APOA1&quot;    &quot;APOC3&quot;</code></pre>
+</div>
+</div>
+<div id="plot" class="section level2">
+<h2>6. Plot</h2>
+<p>Besides the results shown in Sections 4 and 5 in this vignette, this package also provides options to visualize the results of ClussCluster and ClussCluster_Gap. Next we demonstrate the utilities of functions plot_ClussCluster and plot_ClussCluster_Gap to produce four types of plots. The objects we will need are run.gap and run.cc.</p>
+<p>With the run.gap object, we apply the plot_ClussCluster_Gap function to plot the gap statistics against the candidate tuning parameters. Their standard deviations are plotted as the vertical bars. It would helpful to users to eyeball the one that maximizes the gap statistic and the one chosen by the one-sd rule:</p>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" title="1"><span class="kw">plot_ClussCluster_Gap</span>(run.gap)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>With the run.cc object, there are several ways to apply the plot_ClussCluster function. If multiple candidate tuning parameters are evaluated, the number of signature genes of each cluster are plotted against the tuning parameters, with each color and line type corresponding to one cluster:</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1"><span class="kw">plot_ClussCluster</span>(run.gap<span class="op">$</span>run)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>If only one tuning parameter is evaluated, then the user can have a closer look at the results. Two plots will be produced: the venn diagram of the cluster-specific signature genes and the heatmap of the data set with the top m genes from each cluster. The venn diagram shows the overlap of the cluster-specific genes so that we know which genes are important to all clusters and the which genes are uniquely important to one cluster. The heatmap shows the expression patterns of the signature genes, they can be over-expressed, under-expressed, or consistent within a particular cluster.</p>
+<p>For this vignette, the heatmap is plotted based on top 5 genes:</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" title="1"><span class="kw">plot_ClussCluster</span>(run.cc, <span class="dt">m =</span> <span class="dv">5</span>, <span class="dt">snames=</span>Hou_sim<span class="op">$</span>snames, <span class="dt">gnames=</span><span class="kw">rownames</span>(dat.ft))</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="references" class="section level2">
+<h2>7. References</h2>
+<p>Hou, Y., Guo, H., Cao, C., Li, X., Hu, B., Zhu, P., Wu, X., Wen, L., Tang, F., Huang, Y., &amp; Peng, J. (2016). Single-cell triple omics sequencing reveals genetic, epigenetic, and transcriptomic heterogeneity in hepatocellular carcinomas. Cell Research, 26(3), 304-319.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
